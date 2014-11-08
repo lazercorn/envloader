@@ -8,11 +8,6 @@ Envloader uses the same regex for parsing .env files as the the original [dotenv
 
 ## Usage
 
-Just call `load/1` on the `envloader` module with a path to the .env file:
+    application:start(envloader).
 
-    envloader:load("/path/to/.env").
-
-## Forthcoming
-
-* automatically load .env on startup (envloader may become a gen_server)
-* no configuration necessary, just include envloader in the app start sequence
+The .env in the current working directory will be automatically loaded.
