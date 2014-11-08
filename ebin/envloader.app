@@ -4,5 +4,6 @@
   {registered, []},
   {modules, [envloader_app, envloader, envloader_sup]},
   {applications, [kernel, stdlib]},
+  {mod, {envloader_app, []}},
   {env, []}
 ]}.

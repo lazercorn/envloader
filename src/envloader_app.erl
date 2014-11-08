@@ -8,10 +8,8 @@
 %% API Functions
 %% ====================================================================
 
-start(_StartType, _StartArgs) -> envloader_sup:start_link().
+start(_StartType, _StartArgs) ->
+  envloader:autoload(),
+  envloader_sup:start_link().
 
 stop(_State) -> ok.
-
-%% ====================================================================
-%% Internal Functions
-%% ====================================================================
