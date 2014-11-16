@@ -1,0 +1,3 @@
+SINGLE_QUOTED='works'
+DOUBLE_QUOTED="works"
+UNQUOTED=works
