@@ -10,7 +10,7 @@
                  "([\\w\\.]+)" ++           % key
                  "(?:\\s*=\\s*|:\\s+?)" ++  % separator
                  "(" ++                     % optional value begin
-                  "'(?:\\'|[^'])*'" ++      % single quoted value
+                  "'(?:\'|[^'])*'" ++      % single quoted value
                   "|" ++                    % or
                   "\"(?:\"|[^\"])*\"" ++    % double quoted value
                   "|" ++                    % or
@@ -32,7 +32,29 @@ autoload() ->
   end.
 
 load(Dotenv) ->
-  {ok, Raw} = file:read_file(Dotenv),
-  {match, Match} = re:run(Raw, ?PATTERN, [global, {capture, all, list}]),
-  [os:putenv(VarName, Value) || [_All, VarName, Value] <- Match],
-  ok.
+  case file:read_file(Dotenv) of
+    {ok, File} ->
+      Lines = binary:split(File, <<"\n">>, [global, trim]),
+      [process_line(Line) || Line <- Lines];
+    {error, enoent} ->
+      ErrorMsg = io_lib:format("Unable to load file ~s", [Dotenv]),
+      erlang:error(lists:flatten(ErrorMsg))
+  end.
+
+%% ====================================================================
+%% Private Functions
+%% ====================================================================
+
+process_line(Line) ->
+  case re:run(Line, ?PATTERN, [global, {capture, all, list}]) of
+    {match, Match} ->
+      [set_env(VarName, Value) || [_All, VarName, Value] <- Match];
+    nomatch ->
+      ErrorMsg = io_lib:format("Unable to process ~p", [Line]),
+      erlang:error(lists:flatten(ErrorMsg))
+  end.
+
+set_env(VarName, RawValue) ->
+  % Remove quotes and double quotes from the matching value
+  Value = re:replace(RawValue, "['\"]", "", [global, {return, list}]),
+  os:putenv(VarName, Value).
