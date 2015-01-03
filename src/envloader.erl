@@ -35,7 +35,8 @@ load(Dotenv) ->
   case file:read_file(Dotenv) of
     {ok, File} ->
       Lines = binary:split(File, <<"\n">>, [global, trim]),
-      [process_line(Line) || Line <- Lines];
+      [process_line(Line) || Line <- Lines],
+      ok;
     {error, enoent} ->
       ErrorMsg = io_lib:format("Unable to load file ~s", [Dotenv]),
       erlang:error(lists:flatten(ErrorMsg))
