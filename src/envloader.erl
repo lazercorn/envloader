@@ -56,6 +56,7 @@ process_line(Line) ->
   end.
 
 set_env(VarName, RawValue) ->
-  % Remove quotes and double quotes from the matching value
-  Value = re:replace(RawValue, "['\"]", "", [global, {return, list}]),
+  % Remove surrounding quotes
+  RemoveQuotes = "(^['\"])|(['\"]$)",
+  Value = re:replace(RawValue, RemoveQuotes, "", [global, {return, list}]),
   os:putenv(VarName, Value).

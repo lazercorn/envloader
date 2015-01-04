@@ -7,6 +7,8 @@ envloader_test_() ->
 tests() ->
   [{"Sets single quoted values", single_quoted_()},
    {"Sets double quoted values", double_quoted_()},
+   {"Sets double quoted value contains quote",
+    double_quoted_contains_quote_()},
    {"Sets unquoted values", unquoted_()}].
 
 setup() ->
@@ -18,6 +20,9 @@ single_quoted_() ->
 
 double_quoted_() ->
   ?_assertEqual("works", os:getenv("DOUBLE_QUOTED")).
+
+double_quoted_contains_quote_() ->
+  ?_assertEqual("work's", os:getenv("DOUBLE_QUOTED_CONTAINS_QUOTE")).
 
 unquoted_() ->
   ?_assertEqual("works", os:getenv("UNQUOTED")).
